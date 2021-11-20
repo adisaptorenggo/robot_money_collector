@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:robot_money_collector/screen/home.dart';
+import 'package:robot_money_collector/home_page.dart';
 
 void main() {
   runApp(MyApp());
