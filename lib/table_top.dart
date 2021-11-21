@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'constants.dart';
+
 class TableTop extends CustomPainter {
   TableTop(
       {this.width, this.height, this.dimensionx, this.dimensiony, this.robotx, this.roboty, this.direction, this.move});
 
   final double width;
   final double height;
-  final double dimensionx;
-  final double dimensiony;
+  final int dimensionx;
+  final int dimensiony;
   final double robotx;
   final double roboty;
   final int direction;
@@ -15,6 +17,7 @@ class TableTop extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print('paint');
     var paintBoxFill = Paint()
       ..color = Colors.grey
       ..style = PaintingStyle.fill;
@@ -43,7 +46,7 @@ class TableTop extends CustomPainter {
     double xArrow1, yArrow1, xArrow2, yArrow2;
     double xArrow3, yArrow3, xArrow4, yArrow4;
     switch (direction) {
-      case 0:
+      case north:
         xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
         yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.25;
         xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
@@ -60,7 +63,7 @@ class TableTop extends CustomPainter {
         yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
         canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
         break;
-      case 1:
+      case east:
         xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.25;
         yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
         xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.75;
@@ -77,7 +80,7 @@ class TableTop extends CustomPainter {
         yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.75;
         canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
         break;
-      case 2:
+      case south:
         xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
         yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.25;
         xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
@@ -94,7 +97,7 @@ class TableTop extends CustomPainter {
         yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
         canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
         break;
-      case 3:
+      case west:
         xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.25;
         yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
         xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.75;
@@ -113,16 +116,37 @@ class TableTop extends CustomPainter {
         break;
       default:
     }
-    // canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paintBoxFill);
-    // canvas.drawRect(Offset(rdx1, rdy1) & Size(width / dimensionx, height / dimensiony), paintLine);
+
+    final textStyle = TextStyle(color: Colors.greenAccent, fontSize: 20, fontWeight: FontWeight.bold);
+    final textSpan = TextSpan(
+      text: '\$2000',
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: width,
+    );
+    final xNum = 0.0;
+    final yNum = 0.0;
+    final offset = Offset(xNum, yNum);
+    textPainter.paint(canvas, offset);
   }
 
   @override
-  bool shouldRepaint(TableTop oldPainter) {
-    return oldPainter.dimensionx != dimensionx ||
-        oldPainter.dimensiony != dimensiony ||
-        oldPainter.robotx != robotx ||
-        oldPainter.roboty != roboty ||
-        oldPainter.direction != direction;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+
+  // @override
+  // bool shouldRepaint(TableTop oldPainter) {
+  //   print('here');
+
+  //   return oldPainter.dimensionx != dimensionx ||
+  //       oldPainter.dimensiony != dimensiony ||
+  //       oldPainter.robotx != robotx ||
+  //       oldPainter.roboty != roboty ||
+  //       oldPainter.direction != direction;
+  // }
 }
