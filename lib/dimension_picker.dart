@@ -1,5 +1,7 @@
 import 'package:counter_button/counter_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:robot_money_collector/bloc/send_to_server_bloc.dart';
 import 'package:robot_money_collector/home_page.dart';
 
 class DimensionPicker extends StatefulWidget {
@@ -83,10 +85,16 @@ class _DimensionPickerState extends State<DimensionPicker> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  dimensionx: _xVal,
-                                  dimensiony: _yVal,
-                                )));
+                          builder: (context) => BlocProvider<SendToServerBloc>(
+                            create: (context) {
+                              return SendToServerBloc();
+                            },
+                            child: HomePage(
+                              dimensionx: _xVal,
+                              dimensiony: _yVal,
+                            ),
+                          ),
+                        ));
                   }
                 },
                 child: Text('Start'),
