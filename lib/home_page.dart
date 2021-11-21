@@ -11,6 +11,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double widthTable = MediaQuery.of(context).size.width;
     double heightTable = MediaQuery.of(context).size.height / 2.0;
+    double dimensionx = 6;
+    double dimensiony = 6;
+    double robotx = 3, roboty = 1;
+    int direction = 0;
+    bool move;
+
+    int totalMove = 15;
 
     return Scaffold(
       appBar: AppBar(
@@ -42,17 +49,25 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 child: CustomPaint(
                   painter: TableTop(
-                    dimensionx: 6,
-                    dimensiony: 6,
                     width: widthTable,
                     height: heightTable,
+                    dimensionx: dimensionx,
+                    dimensiony: dimensiony,
+                    robotx: robotx,
+                    roboty: roboty,
+                    direction: direction,
+                    move: false,
                   ),
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.all(85),
-              child: Center(child: Text('button')),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                color: Colors.blue,
+                padding: EdgeInsets.all(85),
+                child: Center(child: Text('button')),
+              ),
             ),
           ],
         ),

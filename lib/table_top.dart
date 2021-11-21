@@ -1,36 +1,128 @@
 import 'package:flutter/material.dart';
 
 class TableTop extends CustomPainter {
-  TableTop({this.dimensionx, this.dimensiony, this.width, this.height});
+  TableTop(
+      {this.width, this.height, this.dimensionx, this.dimensiony, this.robotx, this.roboty, this.direction, this.move});
 
-  final int dimensionx;
-  final int dimensiony;
   final double width;
   final double height;
+  final double dimensionx;
+  final double dimensiony;
+  final double robotx;
+  final double roboty;
+  final int direction;
+  final bool move;
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint1 = Paint()
+    var paintBoxFill = Paint()
       ..color = Colors.grey
       ..style = PaintingStyle.fill;
-    var paint2 = Paint()
+    var paintBoxBorder = Paint()
       ..color = Colors.black
-      ..style = PaintingStyle.stroke;
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5;
     double dx = 0, dy = 0;
     for (int i = 0; i < dimensionx; i++) {
       // canvas.d
-      canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paint1);
-      canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paint2);
+      canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paintBoxFill);
+      canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paintBoxBorder);
       for (int j = 0; j < dimensiony; j++) {
-        canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paint1);
-        canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paint2);
+        canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paintBoxFill);
+        canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paintBoxBorder);
         dy = dy + height / dimensiony;
       }
       dy = 0;
       dx = dx + width / dimensionx;
     }
+    final paintLine = Paint()
+      ..color = Colors.redAccent
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 4;
+    double xLine1, yLine1, xLine2, yLine2;
+    double xArrow1, yArrow1, xArrow2, yArrow2;
+    double xArrow3, yArrow3, xArrow4, yArrow4;
+    switch (direction) {
+      case 0:
+        xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.25;
+        xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yLine2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.75;
+        canvas.drawLine(Offset(xLine1, yLine1), Offset(xLine2, yLine2), paintLine);
+        xArrow1 = xLine1;
+        yArrow1 = yLine1;
+        xArrow2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.25;
+        yArrow2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        canvas.drawLine(Offset(xArrow1, yArrow1), Offset(xArrow2, yArrow2), paintLine);
+        xArrow3 = xLine1;
+        yArrow3 = yLine1;
+        xArrow4 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.75;
+        yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
+        break;
+      case 1:
+        xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.25;
+        yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.75;
+        yLine2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        canvas.drawLine(Offset(xLine1, yLine1), Offset(xLine2, yLine2), paintLine);
+        xArrow1 = xLine2;
+        yArrow1 = yLine2;
+        xArrow2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yArrow2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.25;
+        canvas.drawLine(Offset(xArrow1, yArrow1), Offset(xArrow2, yArrow2), paintLine);
+        xArrow3 = xLine2;
+        yArrow3 = yLine2;
+        xArrow4 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.75;
+        canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
+        break;
+      case 2:
+        xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.25;
+        xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yLine2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.75;
+        canvas.drawLine(Offset(xLine1, yLine1), Offset(xLine2, yLine2), paintLine);
+        xArrow1 = xLine2;
+        yArrow1 = yLine2;
+        xArrow2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.25;
+        yArrow2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        canvas.drawLine(Offset(xArrow1, yArrow1), Offset(xArrow2, yArrow2), paintLine);
+        xArrow3 = xLine2;
+        yArrow3 = yLine2;
+        xArrow4 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.75;
+        yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
+        break;
+      case 3:
+        xLine1 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.25;
+        yLine1 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        xLine2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.75;
+        yLine2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.5;
+        canvas.drawLine(Offset(xLine1, yLine1), Offset(xLine2, yLine2), paintLine);
+        xArrow1 = xLine1;
+        yArrow1 = yLine1;
+        xArrow2 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yArrow2 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.25;
+        canvas.drawLine(Offset(xArrow1, yArrow1), Offset(xArrow2, yArrow2), paintLine);
+        xArrow3 = xLine1;
+        yArrow3 = yLine1;
+        xArrow4 = ((width / dimensionx) * robotx) + (width / dimensionx) * 0.5;
+        yArrow4 = ((height / dimensiony) * roboty) + (height / dimensiony) * 0.75;
+        canvas.drawLine(Offset(xArrow3, yArrow3), Offset(xArrow4, yArrow4), paintLine);
+        break;
+      default:
+    }
+    // canvas.drawRect(Offset(dx, dy) & Size(width / dimensionx, height / dimensiony), paintBoxFill);
+    // canvas.drawRect(Offset(rdx1, rdy1) & Size(width / dimensionx, height / dimensiony), paintLine);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(TableTop oldPainter) {
+    return oldPainter.dimensionx != dimensionx ||
+        oldPainter.dimensiony != dimensiony ||
+        oldPainter.robotx != robotx ||
+        oldPainter.roboty != roboty ||
+        oldPainter.direction != direction;
+  }
 }
