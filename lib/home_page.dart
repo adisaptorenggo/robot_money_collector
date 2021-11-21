@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:counter_button/counter_button.dart';
 import 'package:flutter/material.dart';
 import 'package:robot_money_collector/constants.dart';
@@ -12,12 +14,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double _robotx = 0, _roboty = 0;
+  int _robotx = 0, _roboty = 0;
   int _direction = 1;
   int _xVal = 0, _yVal = 0;
-  // bool move;
+  int _totalMoney = 4;
+  List<int> _xMoney = [];
+  List<int> _yMoney = [];
+  var _posMoney;
 
-  int totalMove = 15;
+  List<String> _movementHistories = [];
+  double _totalMoneyAvailable;
+  double _totalMoneyFound;
+  double _totalMoneyEarn = 0;
+  int _interestRate;
+
+  int _totalMove = 15;
+
+  @override
+  void initState() {
+    _generateMoney();
+    _generateInterest();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +48,9 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
-            onPressed: () {},
+            onPressed: () {
+              _setPlace();
+            },
           ),
         ],
       ),
@@ -50,7 +70,7 @@ class _HomePageState extends State<HomePage> {
             Container(
               alignment: Alignment.bottomRight,
               child: Text(
-                "Total Move: $totalMove",
+                "Total Move: $_totalMove",
                 style: TextStyle(fontSize: 10),
               ),
             ),
@@ -64,10 +84,12 @@ class _HomePageState extends State<HomePage> {
                     height: heightTable,
                     dimensionx: widget.dimensionx,
                     dimensiony: widget.dimensiony,
-                    robotx: _robotx,
-                    roboty: _roboty,
+                    robotx: _robotx.toDouble(),
+                    roboty: _roboty.toDouble(),
                     direction: _direction,
-                    move: false,
+                    xMoney: _xMoney,
+                    yMoney: _yMoney,
+                    posMoney: _posMoney,
                   ),
                 ),
               ),
@@ -125,30 +147,50 @@ class _HomePageState extends State<HomePage> {
                                 case north:
                                   if (_roboty > 0 && _roboty <= widget.dimensiony) {
                                     _roboty -= 1;
-                                    totalMove--;
+                                    _totalMove--;
+                                    _movementHistories.add('Array[$_robotx][$_robotx]');
+                                    if (_posMoney[_robotx][_roboty] != null) {
+                                      _posMoney[_robotx][_roboty] = null;
+                                      _totalMoney--;
+                                    }
                                   }
                                   break;
                                 case east:
                                   if (_robotx >= 0 && _robotx < widget.dimensionx - 1) {
                                     _robotx += 1;
-                                    totalMove--;
+                                    _totalMove--;
+                                    _movementHistories.add('Array[$_robotx][$_robotx]');
+                                    if (_posMoney[_robotx][_roboty] != null) {
+                                      _posMoney[_robotx][_roboty] = null;
+                                      _totalMoney--;
+                                    }
                                   }
                                   break;
                                 case south:
                                   if (_roboty >= 0 && _roboty < widget.dimensiony - 1) {
                                     _roboty += 1;
-                                    totalMove--;
+                                    _totalMove--;
+                                    _movementHistories.add('Array[$_robotx][$_robotx]');
+                                    if (_posMoney[_robotx][_roboty] != null) {
+                                      _posMoney[_robotx][_roboty] = null;
+                                      _totalMoney--;
+                                    }
                                   }
                                   break;
                                 case west:
                                   if (_robotx > 0 && _robotx <= widget.dimensionx) {
                                     _robotx -= 1;
-                                    totalMove--;
+                                    _totalMove--;
+                                    _movementHistories.add('Array[$_robotx][$_robotx]');
+                                    if (_posMoney[_robotx][_roboty] != null) {
+                                      _posMoney[_robotx][_roboty] = null;
+                                      _totalMoney--;
+                                    }
                                   }
                                   break;
                                 default:
                               }
-                              if (totalMove == 0) {
+                              if (_totalMove == 0 || _totalMoney == 0) {
                                 _gameOver();
                               }
                             });
@@ -215,52 +257,148 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _generateMoney() {
+    _xMoney = List.generate(widget.dimensionx, (int index) => index);
+    _xMoney.shuffle();
+    for (int i = 0; i < widget.dimensionx - _totalMoney; i++) {
+      _xMoney.removeLast();
+    }
+    _yMoney = List.generate(widget.dimensiony, (int index) => index);
+    _yMoney.shuffle();
+    for (int i = 0; i < widget.dimensiony - _totalMoney; i++) {
+      _yMoney.removeLast();
+    }
+    _posMoney = List.generate(widget.dimensionx, (_) => List(widget.dimensiony));
+    var _random = Random();
+    var _numbers;
+    _totalMoneyAvailable = 0;
+    for (var i = 0; i < _totalMoney; i++) {
+      _numbers = _random.nextInt(20000 - 500) + 500;
+      _posMoney[_xMoney[i]][_yMoney[i]] = _numbers;
+      _totalMoneyAvailable += _numbers;
+    }
+    _totalMoneyFound = 0;
+  }
+
+  void _generateInterest() {
+    var _numbers = Random();
+    _interestRate = _numbers.nextInt(20) + 5;
+  }
+
   void _setPlace() async {
     await showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text("PLACE"),
         content: Container(
+          height: MediaQuery.of(context).size.height / 4,
           child: Column(
             children: [
-              CounterButton(
-                loading: false,
-                onChange: (int val) {
-                  setState(() {
-                    _xVal = val;
-                  });
-                },
-                count: _xVal,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "X:     ",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  CounterButton(
+                    loading: false,
+                    onChange: (int val) {
+                      setState(() {
+                        _xVal = val;
+                      });
+                    },
+                    count: _xVal,
+                  ),
+                ],
               ),
-              CounterButton(
-                loading: false,
-                onChange: (int val) {
-                  setState(() {
-                    _yVal = val;
-                  });
-                },
-                count: _yVal,
-              )
+              Container(
+                margin: EdgeInsets.only(top: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Y:     ",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    CounterButton(
+                      loading: false,
+                      onChange: (int val) {
+                        setState(() {
+                          _yVal = val;
+                        });
+                      },
+                      count: _yVal,
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Direction: ",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
         actions: <Widget>[
-          Expanded(
-              child: MaterialButton(
+          MaterialButton(
             child: Text(
               "Set Place",
             ),
             onPressed: () {
-              totalMove = 15;
-              Navigator.pop(context);
+              setState(() {
+                _totalMove = 15;
+                _totalMoney = 4;
+                _robotx = 0;
+                _roboty = 0;
+                _direction = east;
+                _generateMoney();
+                _generateInterest();
+                Navigator.pop(context);
+              });
             },
-          ))
+          )
         ],
       ),
     );
   }
 
-  void _gameOver() {
-    totalMove = 15;
+  void _gameOver() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Game Over"),
+        content: Container(
+          height: MediaQuery.of(context).size.height / 2,
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            child: Text(
+              "Restart",
+            ),
+            onPressed: () {
+              setState(() {
+                _totalMove = 15;
+                _totalMoney = 4;
+                _robotx = 0;
+                _roboty = 0;
+                _direction = east;
+                _generateMoney();
+                _generateInterest();
+                Navigator.pop(context);
+              });
+            },
+          )
+        ],
+      ),
+    );
   }
 }

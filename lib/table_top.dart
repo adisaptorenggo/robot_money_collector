@@ -4,7 +4,16 @@ import 'constants.dart';
 
 class TableTop extends CustomPainter {
   TableTop(
-      {this.width, this.height, this.dimensionx, this.dimensiony, this.robotx, this.roboty, this.direction, this.move});
+      {this.width,
+      this.height,
+      this.dimensionx,
+      this.dimensiony,
+      this.robotx,
+      this.roboty,
+      this.direction,
+      this.xMoney,
+      this.yMoney,
+      this.posMoney});
 
   final double width;
   final double height;
@@ -13,7 +22,9 @@ class TableTop extends CustomPainter {
   final double robotx;
   final double roboty;
   final int direction;
-  final bool move;
+  final List<int> xMoney;
+  final List<int> yMoney;
+  var posMoney;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -116,24 +127,26 @@ class TableTop extends CustomPainter {
         break;
       default:
     }
-
-    final textStyle = TextStyle(color: Colors.greenAccent, fontSize: 20, fontWeight: FontWeight.bold);
-    final textSpan = TextSpan(
-      text: '\$2000',
-      style: textStyle,
-    );
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout(
-      minWidth: 0,
-      maxWidth: width,
-    );
-    final xNum = 0.0;
-    final yNum = 0.0;
-    final offset = Offset(xNum, yNum);
-    textPainter.paint(canvas, offset);
+    for (int i = 0; i < 4; i++) {
+      double sizeFont = ((width / dimensionx) * 0) + (width / dimensionx) * 0.25;
+      final textStyle = TextStyle(color: Colors.greenAccent, fontSize: sizeFont, fontWeight: FontWeight.bold);
+      final textSpan = TextSpan(
+        text: posMoney[xMoney[i]][yMoney[i]] != null ? '\$${posMoney[xMoney[i]][yMoney[i]]}' : '',
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: width,
+      );
+      final xNum = ((width / dimensionx) * xMoney[i].toDouble()) + (width / dimensionx) * 0.1;
+      final yNum = ((height / dimensiony) * yMoney[i].toDouble()) + (height / dimensiony) * 0.35;
+      final offset = Offset(xNum, yNum);
+      textPainter.paint(canvas, offset);
+    }
   }
 
   @override

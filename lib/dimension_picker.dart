@@ -8,7 +8,7 @@ class DimensionPicker extends StatefulWidget {
 }
 
 class _DimensionPickerState extends State<DimensionPicker> {
-  int _xVal = 3, _yVal = 3;
+  int _xVal = 5, _yVal = 5;
 
   @override
   Widget build(BuildContext context) {
